@@ -179,7 +179,8 @@ namespace FlaUI.UIA3
         public override ActiveTextPositionChangedEventHandlerBase RegisterActiveTextPositionChangedEvent(TreeScope treeScope, Action<AutomationElement, ITextRange> action)
         {
             var eventHandler = new UIA3ActiveTextPositionChangedEventHandler(this, action);
-            Automation.NativeAutomation6.AddActiveTextPositionChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, null, eventHandler);
+            var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			Automation.NativeAutomation6.AddActiveTextPositionChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, cacheRequest, eventHandler);
             return eventHandler;
         }
 
@@ -187,7 +188,8 @@ namespace FlaUI.UIA3
         public override AutomationEventHandlerBase RegisterAutomationEvent(EventId @event, TreeScope treeScope, Action<AutomationElement, EventId> action)
         {
             var eventHandler = new UIA3AutomationEventHandler(this, @event, action);
-            Automation.NativeAutomation.AddAutomationEventHandler(@event.Id, NativeElement, (UIA.TreeScope)treeScope, null, eventHandler);
+			var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			Automation.NativeAutomation.AddAutomationEventHandler(@event.Id, NativeElement, (UIA.TreeScope)treeScope, cacheRequest, eventHandler);
             return eventHandler;
         }
 
@@ -195,9 +197,10 @@ namespace FlaUI.UIA3
         public override PropertyChangedEventHandlerBase RegisterPropertyChangedEvent(TreeScope treeScope, Action<AutomationElement, PropertyId, object> action, PropertyId[] properties)
         {
             var eventHandler = new UIA3PropertyChangedEventHandler(this, action);
-            var propertyIds = properties.Select(p => p.Id).ToArray();
+			var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			var propertyIds = properties.Select(p => p.Id).ToArray();
             Automation.NativeAutomation.AddPropertyChangedEventHandler(NativeElement,
-                (UIA.TreeScope)treeScope, null, eventHandler, propertyIds);
+                (UIA.TreeScope)treeScope, cacheRequest, eventHandler, propertyIds);
             return eventHandler;
         }
 
@@ -205,7 +208,8 @@ namespace FlaUI.UIA3
         public override StructureChangedEventHandlerBase RegisterStructureChangedEvent(TreeScope treeScope, Action<AutomationElement, StructureChangeType, int[]> action)
         {
             var eventHandler = new UIA3StructureChangedEventHandler(this, action);
-            Automation.NativeAutomation.AddStructureChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, null, eventHandler);
+            var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			Automation.NativeAutomation.AddStructureChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, cacheRequest, eventHandler);
             return eventHandler;
         }
 
@@ -213,7 +217,8 @@ namespace FlaUI.UIA3
         public override NotificationEventHandlerBase RegisterNotificationEvent(TreeScope treeScope, Action<AutomationElement, NotificationKind, NotificationProcessing, string, string> action)
         {
             var eventHandler = new UIA3NotificationEventHandler(this, action);
-            Automation.NativeAutomation5.AddNotificationEventHandler(NativeElement, (UIA.TreeScope)treeScope, null, eventHandler);
+            var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			Automation.NativeAutomation5.AddNotificationEventHandler(NativeElement, (UIA.TreeScope)treeScope, cacheRequest, eventHandler);
             return eventHandler;
         }
 
@@ -221,7 +226,8 @@ namespace FlaUI.UIA3
         public override TextEditTextChangedEventHandlerBase RegisterTextEditTextChangedEventHandler(TreeScope treeScope, TextEditChangeType textEditChangeType, Action<AutomationElement, TextEditChangeType, string[]> action)
         {
             var eventHandler = new UIA3TextEditTextChangedEventHandler(this, action);
-            Automation.NativeAutomation3.AddTextEditTextChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, (UIA.TextEditChangeType)textEditChangeType, null, eventHandler);
+            var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(Automation) : null;
+			Automation.NativeAutomation3.AddTextEditTextChangedEventHandler(NativeElement, (UIA.TreeScope)treeScope, (UIA.TextEditChangeType)textEditChangeType, cacheRequest, eventHandler);
             return eventHandler;
         }
 

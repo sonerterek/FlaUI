@@ -424,6 +424,11 @@ namespace FlaUI.Core.AutomationElements
             return FrameworkAutomationElement.GetSupportedProperties();
         }
 
+        public AutomationElement? GetUpdatedCache()
+        {
+            return FrameworkAutomationElement.GetUpdatedCache();
+        }
+
         /// <summary>
         /// Method to check if the element supports the given property via UIA method.
         /// Does not work with cached elements and might be unreliable.

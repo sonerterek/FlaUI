@@ -53,26 +53,34 @@ namespace FlaUI.Core
         }
 
         /// <summary>
-        /// Activate the cache request.
+        /// Activate the cache request for current thread
         /// </summary>
         public IDisposable Activate()
         {
             Push(this);
             return new CacheRequestActivation();
         }
+
+        public void SetAsDefault()
+        {
+			_defaultCacheRequest = this;
+		}
     }
 
     public partial class CacheRequest
     {
-        [ThreadStatic]
-        private static Stack<CacheRequest>? _cacheStack;
-        [ThreadStatic]
-        private static Stack<bool>? _forceNoCacheStack;
+        // This is process wide default CacheRequest
+        private static CacheRequest? _defaultCacheRequest;
+
+		[ThreadStatic]
+        private static Stack<CacheRequest?>? _cacheStack;
+        // [ThreadStatic]
+        // private static Stack<bool>? _forceNoCacheStack;
 
         /// <summary>
         /// Checks if a caching is currently active in the current context.
         /// </summary>
-        public static bool IsCachingActive => (_forceNoCacheStack == null || _forceNoCacheStack.Count == 0) && Current != null;
+        public static bool IsCachingActive => (_cacheStack != null && _cacheStack.Count > 0) ? _cacheStack.Peek() != null : _defaultCacheRequest != null;
 
         /// <summary>
         /// Gets the current cache request object.
@@ -81,11 +89,11 @@ namespace FlaUI.Core
         {
             get
             {
-                if (_cacheStack != null && _cacheStack.Count != 0)
+                if (_cacheStack != null && _cacheStack.Count > 0) 
                 {
                     return _cacheStack.Peek();
-                }
-                return null;
+				}
+                return _defaultCacheRequest;
             }
         }
 
@@ -96,7 +104,7 @@ namespace FlaUI.Core
         {
             if (_cacheStack == null)
             {
-                _cacheStack = new Stack<CacheRequest>();
+                _cacheStack = new Stack<CacheRequest?>();
             }
             _cacheStack.Push(cacheRequest);
         }
@@ -130,17 +138,20 @@ namespace FlaUI.Core
         {
             public ForceNoCacheActivation()
             {
-                if (_forceNoCacheStack == null)
+                if (_cacheStack == null)
                 {
-                    _forceNoCacheStack = new Stack<bool>();
+                    _cacheStack = new Stack<CacheRequest?>();
                 }
-                _forceNoCacheStack.Push(true);
-            }
+				_cacheStack.Push(null);
+			}
 
             public void Dispose()
             {
-                _forceNoCacheStack!.Pop();
-            }
+                if (_cacheStack == null || _cacheStack.Count == 0) {
+					throw new InvalidOperationException("No cache request available to pop");
+				}
+                _cacheStack.Pop();
+			}
         }
     }
 }
