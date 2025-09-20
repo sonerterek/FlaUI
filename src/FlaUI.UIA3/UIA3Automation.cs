@@ -144,16 +144,17 @@ namespace FlaUI.UIA3
             });
         }
 
-        /// <inheritdoc />
-        public override FocusChangedEventHandlerBase RegisterFocusChangedEvent(Action<AutomationElement> action)
-        {
-            var eventHandler = new UIA3FocusChangedEventHandler(this, action);
-            Com.Call(() => NativeAutomation.AddFocusChangedEventHandler(null, eventHandler));
-            return eventHandler;
-        }
+		/// <inheritdoc />
+		public override FocusChangedEventHandlerBase RegisterFocusChangedEvent(Action<AutomationElement> action)
+		{
+			var eventHandler = new UIA3FocusChangedEventHandler(this, action);
+			var cacheRequest = CacheRequest.IsCachingActive ? CacheRequest.Current.ToNative(this) : null;
+			Com.Call(() => NativeAutomation.AddFocusChangedEventHandler(cacheRequest, eventHandler));
+			return eventHandler;
+		}
 
-        /// <inheritdoc />
-        public override void UnregisterFocusChangedEvent(FocusChangedEventHandlerBase eventHandler)
+		/// <inheritdoc />
+		public override void UnregisterFocusChangedEvent(FocusChangedEventHandlerBase eventHandler)
         {
             NativeAutomation.RemoveFocusChangedEventHandler((UIA3FocusChangedEventHandler)eventHandler);
         }
