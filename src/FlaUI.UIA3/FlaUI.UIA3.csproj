@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Build">
-    <TargetFrameworks>net48;net6.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <LangVersion>11.0</LangVersion>
@@ -37,11 +37,6 @@
 
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\FlaUI.Core\FlaUI.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="Accessibility" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
 
   <ItemGroup Label="Additional nuget files">
